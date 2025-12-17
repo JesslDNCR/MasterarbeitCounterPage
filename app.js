@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, doc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+
 const firebaseConfig = {
     apiKey: "AIzaSyAYASIoV6Ah3H-RyRoBJt0sXFJQWdz8rm8",
     authDomain: "masterarbeitcounterpage.firebaseapp.com",
@@ -15,6 +16,9 @@ const db = getFirestore(app);
 
 const docRef = doc(db, "progress", "status");
 const TOTAL_PAGES = 80;
+const milestones = [10, 20, 30, 40, 50, 60, 70, 80];
+let triggeredMilestones = [];
+
 
 // Edit-Modus nur mit ?edit=true
 const urlParams = new URLSearchParams(window.location.search);
@@ -39,6 +43,16 @@ onSnapshot(docRef, (docSnap) => {
   
   document.getElementById("deadline").innerText = deadline.toLocaleDateString('de-DE');
   document.getElementById("days").innerText = days;
+
+  // Meilenstein prüfen
+    if (!triggeredMilestones.includes(data.pages) && milestones.includes(data.pages)) {
+            triggeredMilestones.push(data.pages);
+        if (data.pages === TOTAL_PAGES) {
+            showMilestone("🎆 Ziel erreicht! Glückwunsch!");
+        } else {
+            showMilestone(`🎁 ${data.pages} Seiten geschafft!`);
+        }
+    }
 });
 
 // Buttons
@@ -54,6 +68,15 @@ const minus = document.getElementById("minus");
 if (plus && minus) {
     plus.onclick = () => changePages(1);
     minus.onclick = () => changePages(-1);
+}
+
+
+function showMilestone(message) {
+    const popup = document.getElementById("milestonePopup");
+    popup.innerText = message;
+    popup.style.display = "block";
+    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+    setTimeout(() => { popup.style.display = "none"; }, 3000);
 }
 
 //document.getElementById("minus").onclick = async () => {
