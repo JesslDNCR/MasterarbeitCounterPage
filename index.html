@@ -10,10 +10,7 @@
             min-height: 100vh;
             font-family: system-ui, sans-serif;
             background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #333;
+            position: relative; /* Für absolute Positionierung */
         }
         .card {
             background: white;
@@ -22,6 +19,10 @@
             width: 340px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
         h1 { margin-top: 0; }
         .pages {
@@ -56,21 +57,62 @@
         #milestonePopup {
             position: fixed;
             top: 30%; left: 50%; transform: translateX(-50%);
-            background: white; padding: 20px 40px; border-radius: 15px;
+            background: white; 
+            padding: 20px 40px; 
+            border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             display: none;
             font-size: 24px;
             z-index: 1000;
             text-align: center;
+            max-width: 400px; /* Für GIFs größer machen */
+            max-height: 300px;
         }
+        #quotesContainer {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        #leftQuotes, #rightQuotes {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        #leftQuotes {
+            left: 10%;
+        }
+        #rightQuotes {
+            right: 10%;
+        }
+        .quote-card {
+            background: white; /* Wird per JS überschrieben mit bunten Farben */
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            color: #333;
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
     </style>
 </head>
 <body>
 
 <div class="card">
     <h1>Timna's persönlicher Masterarbeit Fortschritt</h1>
-    <h2>YOU CAN DO IT 💪 (because you have to)</h2>
-    <h6>((And because we watch you...))</h6>
+    <h4>YOU CAN DO IT 💪 <br> (because you have to) <br> ((And because we watch you...))</h4>
     <p>Deadline: <strong><span id="deadline">–</span></strong></p>
     <p>Noch <span class="days" id="days">–</span> Tage</p>
 
@@ -86,6 +128,9 @@
         <button id="plus">+</button>
     </div>
 </div>
+
+<div id="leftQuotes"></div>
+<div id="rightQuotes"></div>
 
 <div id="milestonePopup"></div>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
