@@ -33,15 +33,18 @@ let triggeredConfetti = [];
 let triggeredQuotes = [];
 const gifMilestones = [10, 20, 30, 50, 70, 80]; // Meilensteine für GIF-Popups
 const gifUrls = {
-  10: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnYzZW1hOXZkcXg0d2dya2M0aHpyejJ2Y3BsN21wdWY0bm00YzFhdCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IwYzRHOA0bTtbx4VBd/giphy.gif', // Ersetze mit deinem GIF für 10 Seiten
-  20: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzBrODc1ZjliZnFscW1zdTkxc25hNnR4ZHR2YXQ5cjBnenR4MG0yeCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5FfjsWfdbJcXu/giphy.gif', // Ersetze mit deinem GIF für 20 Seiten
-  30: 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJrcnNucTBpZHo5ZDdnY3h0ZjdlYWlnaWhqcDRyb2l2NjdlbTVhdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5UAofAl6g5t1GL5nO8/giphy.gif', // Ersetze mit deinem GIF für 30 Seiten
-  50: 'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif', // Ersetze mit deinem GIF für 50 Seiten
-  70: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGp5MTUxbjBjZHBtdXd3MjYzcW9yZGhjMnJ6YTdhc3Y0MWIwbjhmZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/czubJ08i7deuKGJE9A/giphy.gif', // Ersetze mit deinem GIF für 70 Seiten
-  80: 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWxvYXhha2QxNDJ4Ym5qbWk3dG0yaWhtMjJ6aTAxcnd4OXFwNTRwOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ebFG4jcnC1Ny8/giphy.gif', // Ersetze mit deinem GIF für 80 Seiten (und über 80)
-  over80: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExejhjcWc0d2NleHBxbGxyaGs2ajZ5enJhOXN0aW03azJ6M3EwOGtuYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/EdRgVzb2X3iJW/giphy.gif' // Optionales separates GIF für über 80 (hier dasselbe wie 80)
+  10: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnYzZW1hOXZkcXg0d2dya2M0aHpyejJ2Y3BsN21wdWY0bm00YzFhdCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IwYzRHOA0bTtbx4VBd/giphy.gif', 
+  20: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzBrODc1ZjliZnFscW1zdTkxc25hNnR4ZHR2YXQ5cjBnenR4MG0yeCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5FfjsWfdbJcXu/giphy.gif',
+  30: 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJrcnNucTBpZHo5ZDdnY3h0ZjdlYWlnaWhqcDRyb2l2NjdlbTVhdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5UAofAl6g5t1GL5nO8/giphy.gif',
+  50: 'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif',
+  70: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGp5MTUxbjBjZHBtdXd3MjYzcW9yZGhjMnJ6YTdhc3Y0MWIwbjhmZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/czubJ08i7deuKGJE9A/giphy.gif',
+  80: 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWxvYXhha2QxNDJ4Ym5qbWk3dG0yaWhtMjJ6aTAxcnd4OXFwNTRwOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ebFG4jcnC1Ny8/giphy.gif',
+  over80: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExejhjcWc0d2NleHBxbGxyaGs2ajZ5enJhOXN0aW03azJ6M3EwOGtuYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/EdRgVzb2X3iJW/giphy.gif'
 };
 let triggeredGifs = []; // Um Wiederholungen zu verhindern
+const pageMotivations = ["Wowii!", "Wida a seital :D", "Amazing!", "YAASS!", "Let's Gooo!", "Task: geh mal a runde ums haus.", "💪", "🚀", "🌟", "🔥", "👍"];
+
+let lastPages = 0; // Um zu tracken, ob Seiten erhöht wurden
 
 
 // Edit-Modus nur mit ?edit=true
@@ -56,6 +59,20 @@ onSnapshot(docRef, (docSnap) => {
   // Seiten
   document.getElementById("pages").innerText = data.pages;
 
+  // Neue Funktion: Motivations-Popup und Effekte bei jeder Seitenerhöhung
+  if (data.pages > lastPages) {
+    const randomMotivation = pageMotivations[Math.floor(Math.random() * pageMotivations.length)];
+    showPageMotivation(randomMotivation);
+    
+    // Kombinierte Effekte der Seitenzahl
+    const pagesElement = document.getElementById("pages");
+    pagesElement.classList.add("pageEffect");
+    setTimeout(() => {
+      pagesElement.classList.remove("pageEffect");
+    }, 1000); // Nach 1 Sekunde entfernen
+  }
+  lastPages = data.pages; // Update
+
   // Fortschritt
   const progress = Math.min(100, (data.pages / TOTAL_PAGES) * 100);
   document.getElementById("progress").style.width = progress + "%";
@@ -67,6 +84,19 @@ onSnapshot(docRef, (docSnap) => {
   
   document.getElementById("deadline").innerText = deadline.toLocaleDateString('de-DE');
   document.getElementById("days").innerText = days;
+
+  // Neu: Seiten pro Tag berechnen
+  const remainingPages = TOTAL_PAGES - data.pages;
+  let pagesPerDayText = "– Seiten pro Tag, dann schaffst du's!";
+  if (days > 0 && remainingPages > 0) {
+    const pagesPerDay = (remainingPages / days).toFixed(2); // Exakt auf 2 Dezimalstellen, ohne Runden
+    pagesPerDayText = `${pagesPerDay} Seiten pro Tag, dann schaffst du's!`;
+  } else if (remainingPages <= 0) {
+    pagesPerDayText = "Ziel erreicht! 🎉";
+  } else {
+    pagesPerDayText = "Deadline überschritten – hol auf!";
+  }
+  document.getElementById("pagesPerDay").innerText = pagesPerDayText;
 
   // Konfetti prüfen (alle 5 Seiten)
   if (!triggeredConfetti.includes(data.pages) && confettiMilestones.includes(data.pages)) {
@@ -96,12 +126,12 @@ onSnapshot(docRef, (docSnap) => {
     }
   });
 
-  // GIF-Popup prüfen (bei 30,50,70,80 und über 80)
+  // GIF-Popup prüfen
   if (gifMilestones.includes(data.pages) && !triggeredGifs.includes(data.pages)) {
     triggeredGifs.push(data.pages);
     const gifUrl = gifUrls[data.pages];
     showGifMilestone(gifUrl);
-  } else if (data.pages > 80 && !triggeredGifs.includes('over80')) {
+  } else if (data.pages > 80) {
     triggeredGifs.push('over80');
     const gifUrl = gifUrls.over80;
     showGifMilestone(gifUrl);
@@ -140,14 +170,6 @@ if (plus && minus) {
 }
 
 
-function showMilestone(message) {
-    const popup = document.getElementById("milestonePopup");
-    popup.innerText = message;
-    popup.style.display = "block";
-    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-    setTimeout(() => { popup.style.display = "none"; }, 3000);
-}
-
 // Neue Funktion für GIF-Popup
 function showGifMilestone(gifUrl) {
   const popup = document.getElementById("milestonePopup");
@@ -159,3 +181,41 @@ function showGifMilestone(gifUrl) {
     popup.innerHTML = ''; // Zurücksetzen
   }, 5000); // 5 Sekunden
 }
+
+// Angepasste Funktion für kleines Motivations-Popup (jede Seite)
+function showPageMotivation(message) {
+  const card = document.querySelector(".card"); // Zur Card hinzufügen
+  const popup = document.createElement('div');
+  popup.className = 'page-motivation-popup';
+  popup.innerText = message;
+  card.appendChild(popup);
+  
+  // Nach 0.3s sichtbar machen (für Animation)
+  setTimeout(() => {
+    popup.style.opacity = '1';
+  }, 10);
+  
+  setTimeout(() => {
+    popup.remove(); // Nach 1 Sekunde entfernen
+  }, 1000);
+}
+
+// Markierungen für Meilensteine hinzufügen (nach dem Laden)
+document.addEventListener('DOMContentLoaded', () => {
+    const progressBar = document.getElementById('progressBar');
+    const milestones = [0, 10, 20, 30, 40, 50, 60, 70, 80]; // Meilensteine für Markierungen
+
+    milestones.forEach(milestone => {
+        const percent = (milestone / TOTAL_PAGES) * 100;
+        const marker = document.createElement('div');
+        marker.className = 'milestone-marker';
+        marker.style.left = percent + '%';
+
+        const label = document.createElement('div');
+        label.className = 'milestone-label';
+        label.innerText = milestone;
+        marker.appendChild(label);
+
+        progressBar.appendChild(marker);
+    });
+});

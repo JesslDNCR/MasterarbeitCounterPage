@@ -10,7 +10,7 @@
             min-height: 100vh;
             font-family: system-ui, sans-serif;
             background: linear-gradient(135deg, #667eea, #764ba2);
-            position: relative; /* Für absolute Positionierung */
+            position: relative;
         }
         .card {
             background: white;
@@ -19,10 +19,11 @@
             width: 340px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             text-align: center;
-            position: absolute;
+            position: absolute; /* Bleibt absolute für Zentrierung */
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            /* Entfernt: position: relative; – Card bleibt zentriert, Popup ist relativ dazu */
         }
         h1 { margin-top: 0; }
         .pages {
@@ -35,8 +36,9 @@
             height: 14px;
             background: #eee;
             border-radius: 10px;
-            overflow: hidden;
-            margin: 20px 0;
+            overflow: visible; /* Geändert von hidden, damit Labels sichtbar sind */
+            margin: 30px 0;
+            position: relative; /* Neu: Damit Marker nur in der Bar sind */
         }
         .progress {
             height: 100%;
@@ -105,21 +107,73 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        .milestone-marker {
+            position: absolute;
+            bottom: 0;
+            width: 2px;
+            height: 14px; /* Höhe der progress-bar */
+            background: #333;
+            z-index: 1;
+        }
+        .milestone-label {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: bold;
+            color: #333;
+            white-space: nowrap;
+        }
+        .page-motivation-popup {
+            position: absolute; /* Geändert von fixed zu absolute, relativ zur .card */
+            top: 50%; /* Etwa auf Höhe der Seitenzahl */
+            right: 20px; /* Rechts neben der Seitenzahl */
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 10; /* Innerhalb der Card */
+            animation: popIn 0.3s ease-out;
+            opacity: 0; /* Start unsichtbar */
+            pointer-events: none; /* Keine Interaktion */
+        }
 
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes colorBlink {
+            0% { color: #333; }
+            50% { color: #0fa80f; }
+            100% { color: #333; }
+        }
+        @keyframes grow {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        .pageEffect {
+            animation: colorBlink 0.5s, grow 0.5s;
+        }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h1>Timna's persönlicher Masterarbeit Fortschritt</h1>
-    <h4>YOU CAN DO IT 💪 <br> (because you have to) <br> ((And because we watch you...))</h4>
+    <h2>Timna's persönlicher Masterarbeit Fortschritt</h2>
+    <p>YOU CAN DO IT 💪 <br> (because you have to) <br> ((And because we watch you...))</p>
     <p>Deadline: <strong><span id="deadline">–</span></strong></p>
     <p>Noch <span class="days" id="days">–</span> Tage</p>
+    <p id="pagesPerDay">– Seiten pro Tag, dann schaffst du's!</p>
 
     <div class="pages" id="pages">0</div>
     <p>fertig geschriebene Seiten</p>
 
-    <div class="progress-bar">
+    <div class="progress-bar" id="progressBar">
         <div class="progress" id="progress"></div>
     </div>
 
