@@ -159,6 +159,23 @@
         .pageEffect {
             animation: colorBlink 0.5s, grow 0.5s;
         }
+        #calendar {
+            margin: 20px 0;
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+            box-shadow: none;
+            max-width: none;
+        }
+        #calendar h3 {
+            margin-top: 0;
+            font-size: 18px;
+        }
+        #calendarGrid {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -167,8 +184,15 @@
     <h2>Timna's persönlicher Masterarbeit Fortschritt</h2>
     <p>YOU CAN DO IT 💪 <br> (because you have to) <br> ((And because we watch you...))</p>
     <p>Deadline: <strong><span id="deadline">–</span></strong></p>
-    <p>Noch <span class="days" id="days">–</span> Tage</p>
-    <p id="pagesPerDay">– Seiten pro Tag, dann schaffst du's!</p>
+
+    <!-- Kalender für Schreib-Tage -->
+    <div id="calendar">
+        <div>Schreib-Tage:</div>
+        <div id="calendarGrid"></div>
+    </div>
+
+    <p>Noch <span id="remainingDays">–</span> Arbeitstage</p>
+    <p id="pagesPerDay">– Seiten pro Arbeitstag, dann schaffst du's!</p>
 
     <div class="pages" id="pages">0</div>
     <p>fertig geschriebene Seiten</p>

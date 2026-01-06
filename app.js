@@ -1,7 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, doc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-
+console.log('App.js loaded'); // Debug
 const firebaseConfig = {
     apiKey: "AIzaSyAYASIoV6Ah3H-RyRoBJt0sXFJQWdz8rm8",
     authDomain: "masterarbeitcounterpage.firebaseapp.com",
@@ -16,6 +15,20 @@ const db = getFirestore(app);
 
 const docRef = doc(db, "progress", "status");
 const TOTAL_PAGES = 80;
+const DEADLINE = new Date(2026, 4, 5); // 05.05.2026 (Mai ist 4, 0-basiert)
+const writingDays = [
+  new Date(2026, 0, 9), new Date(2026, 0, 10), new Date(2026, 0, 11),
+  new Date(2026, 0, 16), new Date(2026, 0, 17), new Date(2026, 0, 18),
+  new Date(2026, 0, 23), new Date(2026, 0, 24), new Date(2026, 0, 25),
+  new Date(2026, 0, 30), new Date(2026, 1, 6), new Date(2026, 1, 7), new Date(2026, 1, 8),
+  new Date(2026, 1, 13), new Date(2026, 1, 14), new Date(2026, 1, 15),
+  new Date(2026, 1, 23), new Date(2026, 1, 24), new Date(2026, 1, 25), 
+  new Date(2026, 1, 26), new Date(2026, 1, 27), new Date(2026, 1, 28), 
+  new Date(2026, 2, 1),
+  new Date(2026, 2, 6), new Date(2026, 2, 7), new Date(2026, 2, 8),
+  new Date(2026, 2, 20), new Date(2026, 2, 27),
+  new Date(2026, 3, 3), new Date(2026, 3, 4), new Date(2026, 3, 5)
+];
 const confettiMilestones = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80]; // Alle 5 Seiten: Konfetti
 const quoteMilestones = [10, 20, 30, 40, 50, 60, 70, 80]; // Alle 10 Seiten: Spruch
 const quotes = [    
@@ -55,7 +68,12 @@ document.getElementById("editControls").style.display = "block";
 
 // Live-Listener (alle sehen Updates)
 onSnapshot(docRef, (docSnap) => {
+  console.log('Firebase data loaded:', docSnap.data()); // Debug: Prüfe, ob Daten kommen
   const data = docSnap.data();
+  if (!data) {
+    console.error('No data in Firebase!');
+    return;
+  }
   // Seiten
   document.getElementById("pages").innerText = data.pages;
 
@@ -78,23 +96,25 @@ onSnapshot(docRef, (docSnap) => {
   document.getElementById("progress").style.width = progress + "%";
 
   // Deadline
-  const deadline = data.deadline.toDate();
+  const deadline = DEADLINE;
   const today = new Date();
   const days = Math.ceil((deadline - today) / (1000*60*60*24));
   
   document.getElementById("deadline").innerText = deadline.toLocaleDateString('de-DE');
-  document.getElementById("days").innerText = days;
+  // Entfernt: document.getElementById("days").innerText = days; – Nicht mehr gebraucht, da wir Arbeitstage verwenden
 
-  // Neu: Seiten pro Tag berechnen
+  // Neu: Seiten pro Tag berechnen basierend auf verbleibenden Schreib-Tagen
   const remainingPages = TOTAL_PAGES - data.pages;
-  let pagesPerDayText = "– Seiten pro Tag, dann schaffst du's!";
-  if (days > 0 && remainingPages > 0) {
-    const pagesPerDay = (remainingPages / days).toFixed(2); // Exakt auf 2 Dezimalstellen, ohne Runden
-    pagesPerDayText = `${pagesPerDay} Seiten pro Tag, dann schaffst du's!`;
+  const remainingWritingDays = writingDays.filter(d => d >= today).length;
+  document.getElementById("remainingDays").innerText = remainingWritingDays;
+  let pagesPerDayText = "– Seiten pro Arbeitstag, dann schaffst du's!";
+  if (remainingWritingDays > 0 && remainingPages > 0) {
+    const pagesPerDay = (remainingPages / remainingWritingDays).toFixed(2);
+    pagesPerDayText = `${pagesPerDay} Seiten pro Arbeitstag, dann schaffst du's!`;
   } else if (remainingPages <= 0) {
     pagesPerDayText = "Ziel erreicht! 🎉";
   } else {
-    pagesPerDayText = "Deadline überschritten – hol auf!";
+    pagesPerDayText = "Keine Schreib-Tage mehr – Deadline überschritten!";
   }
   document.getElementById("pagesPerDay").innerText = pagesPerDayText;
 
@@ -142,17 +162,17 @@ onSnapshot(docRef, (docSnap) => {
     triggeredGifs.splice(triggeredGifs.indexOf('over80'), 1);
   }
 
-  // Entferne Quote-Cards, wenn Meilensteine nicht mehr erreicht sind
-  triggeredQuotes.forEach((milestone) => {
-    if (data.pages < milestone) {
-      const card = document.querySelector(`.quote-card[data-pages="${milestone}"]`);
-      if (card) {
-        card.remove();
-        triggeredQuotes.splice(triggeredQuotes.indexOf(milestone), 1); // Aus Array entfernen
+  // Kalender aktualisieren (für vergangene Tage)
+  const spans = document.querySelectorAll('#calendarGrid span');
+  if (spans.length > 0) {
+    writingDays.forEach((day, index) => {
+      if (day < today) {
+        spans[index].style.color = 'green';
+      } else {
+        spans[index].style.color = ''; // Reset
       }
-    }
-  });
-});
+    });
+  }
 
 // Buttons
 async function changePages(delta) {
@@ -200,11 +220,12 @@ function showPageMotivation(message) {
   }, 1000);
 }
 
-// Markierungen für Meilensteine hinzufügen (nach dem Laden)
-document.addEventListener('DOMContentLoaded', () => {
-    const progressBar = document.getElementById('progressBar');
-    const milestones = [0, 10, 20, 30, 40, 50, 60, 70, 80]; // Meilensteine für Markierungen
+});
 
+// Kalender und Markierungen erstellen
+const progressBar = document.getElementById('progressBar');
+if (progressBar) {
+    const milestones = [0, 10, 20, 30, 40, 50, 60, 70, 80];
     milestones.forEach(milestone => {
         const percent = (milestone / TOTAL_PAGES) * 100;
         const marker = document.createElement('div');
@@ -218,4 +239,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         progressBar.appendChild(marker);
     });
-});
+    console.log('Milestones created');
+}
+
+const grid = document.getElementById('calendarGrid');
+if (grid) {
+    grid.innerHTML = ''; // Clear
+    const today = new Date();
+    writingDays.forEach(day => {
+        const span = document.createElement('span');
+        span.innerText = day.toLocaleDateString('de-DE', {day: '2-digit', month: '2-digit'});
+        if (day < today) {
+            span.style.color = 'orange';
+        }
+        grid.appendChild(span);
+        grid.appendChild(document.createTextNode(' ')); // Space
+    });
+    console.log('Calendar spans created');
+} else {
+    console.error('calendarGrid not found');
+}
