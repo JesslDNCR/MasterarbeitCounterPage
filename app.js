@@ -147,7 +147,7 @@ function setupProgressTracker(person) {
     quoteMilestones.forEach((milestone, index) => {
       if (data.pages >= milestone && !triggeredQuotes[person].includes(milestone)) {
         triggeredQuotes[person].push(milestone);
-        const quote = quotes[index];
+        const quote = formatQuote(quotes[index], person);
         const quoteCard = document.createElement('div');
         quoteCard.className = 'quote-card';
         quoteCard.innerText = quote;
@@ -265,7 +265,7 @@ const quoteMilestones = [10, 20, 30, 40, 50, 60, 70, 80]; // Alle 10 Seiten: Spr
 const quotes = [    
     "JEA! 10 Seiten is schau mal a bissal was. Let's GOO! 💪",
     "20 Seiten done. SO PROUD. :D 🚀",
-    "HAWARA TIMNA LET'S FEEEETZ! 30 Seiten is quasi schon halbzeit und halbzeit is quasi schon fertig. 🌟",
+    "HAWARA {name} LET'S FEEEETZ! 30 Seiten is quasi schon halbzeit und halbzeit is quasi schon fertig. 🌟",
     "Hoibzeid. I cry. Amazing work 🏆",
     "Go giirl go giirl go giirl! 🔑",
     "Heast jetzt is nimma viel. Griagst an Regenbogen dafia! 🌈",
@@ -371,6 +371,11 @@ const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get("edit") === "true") {
   document.getElementById("editControls-timna").style.display = "block";
   document.getElementById("editControls-jasmin").style.display = "block";
+}
+
+function formatQuote(quote, person) {
+  const name = person.toUpperCase();
+  return quote.replace(/{name}/gi, name);
 }
 
 
