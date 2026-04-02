@@ -12,6 +12,14 @@
             background: linear-gradient(135deg, #667eea, #764ba2);
             position: relative;
         }
+        .cards-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            gap: 40px; /* Abstand zwischen den Cards */
+        }
         .card {
             background: white;
             border-radius: 20px;
@@ -19,11 +27,7 @@
             width: 340px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             text-align: center;
-            position: absolute; /* Bleibt absolute für Zentrierung */
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            /* Entfernt: position: relative; – Card bleibt zentriert, Popup ist relativ dazu */
+            /* Entfernt: position absolute, da jetzt in flex container */
         }
         h1 { margin-top: 0; }
         .pages {
@@ -180,30 +184,58 @@
 </head>
 <body>
 
-<div class="card">
-    <h2>Timna's persönlicher Masterarbeit Fortschritt</h2>
-    <p>YOU CAN DO IT 💪 <br> (because you have to) <br> ((And because we watch you...))</p>
-    <p>Deadline: <strong><span id="deadline">–</span></strong></p>
+<div class="cards-container">
+    <div class="card" id="timna-card">
+        <h2>Timna's persönlicher Masterarbeit Fortschritt</h2>
+        <p>YOU CAN DO IT 💪 <br> (because you have to) <br> ((And because we watch you...))</p>
+        <p>Deadline: <strong><span id="deadline-timna">–</span></strong></p>
 
-    <!-- Kalender für Schreib-Tage -->
-    <div id="calendar">
-        <div>Schreib-Tage:</div>
-        <div id="calendarGrid"></div>
+        <!-- Kalender für Schreib-Tage -->
+        <div id="calendar-timna">
+            <div>Schreib-Tage:</div>
+            <div id="calendarGrid-timna"></div>
+        </div>
+
+        <p>Noch <span id="remainingDays-timna">–</span> Arbeitstage</p>
+        <p id="pagesPerDay-timna">– Seiten pro Arbeitstag, dann schaffst du's!</p>
+
+        <div class="pages" id="pages-timna">0</div>
+        <p>fertig geschriebene Seiten</p>
+
+        <div class="progress-bar" id="progressBar-timna">
+            <div class="progress" id="progress-timna"></div>
+        </div>
+
+        <div class="edit" id="editControls-timna">
+            <button id="minus-timna">–</button>
+            <button id="plus-timna">+</button>
+        </div>
     </div>
 
-    <p>Noch <span id="remainingDays">–</span> Arbeitstage</p>
-    <p id="pagesPerDay">– Seiten pro Arbeitstag, dann schaffst du's!</p>
+    <div class="card" id="jasmin-card">
+        <h2>Jasmin's Fortschritt</h2>
+        <p>Deadline: <strong><span id="deadline-jasmin">–</span></strong></p>
 
-    <div class="pages" id="pages">0</div>
-    <p>fertig geschriebene Seiten</p>
+        <!-- Kalender für Schreib-Tage -->
+        <div id="calendar-jasmin">
+            <div>Schreib-Tage:</div>
+            <div id="calendarGrid-jasmin"></div>
+        </div>
 
-    <div class="progress-bar" id="progressBar">
-        <div class="progress" id="progress"></div>
-    </div>
+        <p>Noch <span id="remainingDays-jasmin">–</span> Arbeitstage</p>
+        <p id="pagesPerDay-jasmin">– Seiten pro Arbeitstag, dann schaffst du's!</p>
 
-    <div class="edit" id="editControls">
-        <button id="minus">–</button>
-        <button id="plus">+</button>
+        <div class="pages" id="pages-jasmin">0</div>
+        <p>fertig geschriebene Seiten</p>
+
+        <div class="progress-bar" id="progressBar-jasmin">
+            <div class="progress" id="progress-jasmin"></div>
+        </div>
+
+        <div class="edit" id="editControls-jasmin">
+            <button id="minus-jasmin">–</button>
+            <button id="plus-jasmin">+</button>
+        </div>
     </div>
 </div>
 
