@@ -21,7 +21,7 @@
             gap: 40px; /* Abstand zwischen den Cards */
         }
         .card {
-            background: white;
+            background: #a5c7fb;
             border-radius: 20px;
             padding: 40px;
             width: 340px;
@@ -47,7 +47,7 @@
         .progress {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
+            background: linear-gradient(90deg, #f0a903, #52a24b);
             transition: width 0.3s ease;
         }
         button {
@@ -237,7 +237,34 @@
             <button id="plus-jasmin">+</button>
         </div>
     </div>
+
+    <div class="card" id="carina-card">
+        <h2>Carina's Fortschritt</h2>
+        <p>Deadline: <strong><span id="deadline-carina">–</span></strong></p>
+
+        <!-- Kalender für Schreib-Tage -->
+        <div id="calendar-carina">
+            <div>Schreib-Tage:</div>
+            <div id="calendarGrid-carina"></div>
+        </div>
+
+        <p>Noch <span id="remainingDays-carina">–</span> Arbeitstage</p>
+        <p id="pagesPerDay-carina">– Seiten pro Arbeitstag, dann schaffst du's!</p>
+
+        <div class="pages" id="pages-carina">0</div>
+        <p>fertig geschriebene Seiten</p>
+
+        <div class="progress-bar" id="progressBar-carina">
+            <div class="progress" id="progress-carina"></div>
+        </div>
+
+        <div class="edit" id="editControls-carina">
+            <button id="minus-carina">–</button>
+            <button id="plus-carina">+</button>
+        </div>
+    </div>
 </div>
+
 
 <div id="leftQuotes"></div>
 <div id="rightQuotes"></div>

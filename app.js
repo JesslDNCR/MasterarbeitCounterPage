@@ -59,8 +59,8 @@ function setupProgressTracker(person) {
     const progressBar = document.getElementById(`progressBar${suffix}`);
     if (progressBar) {
       // Entferne alte Marker
-      const existingMarkers = progressBar.querySelectorAll('.milestone-marker');
-      existingMarkers.forEach(marker => marker.remove());
+      // const existingMarkers = progressBar.querySelectorAll('.milestone-marker');
+      // existingMarkers.forEach(marker => marker.remove());
       
       const milestones = [];
       for (let i = 0; i <= totalPages; i += 10) {
@@ -103,7 +103,7 @@ function setupProgressTracker(person) {
 
     // Tage berechnen
     let remainingDays;
-    if (person === 'timna') {
+    if (writingDays.length > 0 && writingDays.some(d => d >= today)) {
       remainingDays = writingDays.filter(d => d >= today).length;
     } else {
       remainingDays = Math.ceil((deadline - today) / (1000*60*60*24));
@@ -218,7 +218,7 @@ function setupProgressTracker(person) {
     }
 
     // Kalender für Timna
-    if (person === 'timna') {
+    if (person === 'timna' && writingDays.length > 0) {
       const grid = document.getElementById(`calendarGrid${suffix}`);
       if (grid && grid.children.length === 0) { // Nur wenn noch nicht erstellt
         writingDays.forEach(day => {
@@ -227,7 +227,7 @@ function setupProgressTracker(person) {
           grid.appendChild(span);
           grid.appendChild(document.createTextNode(' ')); // Space
         });
-        console.log('Calendar spans created for Timna');
+        console.log('Calendar spans created for ', person);
       }
       // Farben aktualisieren
       const spans = grid.querySelectorAll('span');
@@ -365,12 +365,14 @@ function showPageMotivation(message, person) {
 // Setup für beide Personen
 setupProgressTracker('timna');
 setupProgressTracker('jasmin');
+setupProgressTracker('carina');
 
 // Edit-Modus nur mit ?edit=true
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get("edit") === "true") {
   document.getElementById("editControls-timna").style.display = "block";
   document.getElementById("editControls-jasmin").style.display = "block";
+  document.getElementById("editControls-carina").style.display = "block";
 }
 
 function formatQuote(quote, person) {
