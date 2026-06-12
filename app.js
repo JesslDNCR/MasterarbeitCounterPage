@@ -102,8 +102,11 @@ function setupProgressTracker(person) {
     document.getElementById(`deadline${suffix}`).innerText = deadline.toLocaleDateString('de-DE');
 
     // Tage berechnen
+    const remainingPages = totalPages - data.pages;
     let remainingDays;
-    if (writingDays.length > 0 && writingDays.some(d => d >= today)) {
+    if (remainingPages <= 0) {
+      remainingDays = "SCHAISEGAL";
+    } else if (writingDays.length > 0 && writingDays.some(d => d >= today)) {
       remainingDays = writingDays.filter(d => d >= today).length;
     } else {
       remainingDays = Math.ceil((deadline - today) / (1000*60*60*24));
@@ -111,7 +114,6 @@ function setupProgressTracker(person) {
     document.getElementById(`remainingDays${suffix}`).innerText = remainingDays;
 
     // Seiten pro Tag
-    const remainingPages = totalPages - data.pages;
     let pagesPerDayText = "– Seiten pro Tag, dann schaffst du's!";
     if (remainingDays > 0 && remainingPages > 0) {
       const pagesPerDay = (remainingPages / remainingDays).toFixed(2);
@@ -366,6 +368,7 @@ function showPageMotivation(message, person) {
 setupProgressTracker('timna');
 setupProgressTracker('jasmin');
 setupProgressTracker('carina');
+setupProgressTracker('josef');
 
 // Edit-Modus nur mit ?edit=true
 const urlParams = new URLSearchParams(window.location.search);
@@ -373,6 +376,7 @@ if (urlParams.get("edit") === "true") {
   document.getElementById("editControls-timna").style.display = "block";
   document.getElementById("editControls-jasmin").style.display = "block";
   document.getElementById("editControls-carina").style.display = "block";
+  document.getElementById("editControls-josef").style.display = "block";
 }
 
 function formatQuote(quote, person) {
