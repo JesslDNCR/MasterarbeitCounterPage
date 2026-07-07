@@ -28,6 +28,70 @@ const writingDays = [
   new Date(2026, 3, 3), new Date(2026, 3, 4), new Date(2026, 3, 5)
 ];
 
+const gifMilestoneDefinitions = [
+  { percent: 15, url: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnYzZW1hOXZkcXg0d2dya2M0aHpyejJ2Y3BsN21wdWY0bm00YzFhdCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IwYzRHOA0bTtbx4VBd/giphy.gif' },
+  { percent: 25, url: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzBrODc1ZjliZnFscW1zdTkxc25hNnR4ZHR2YXQ5cjBnenR4MG0yeCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5FfjsWfdbJcXu/giphy.gif' },
+  { percent: 33, url: 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJrcnNucTBpZHo5ZDdnY3h0ZjdlYWlnaWhqcDRyb2l2NjdlbTVhdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5UAofAl6g5t1GL5nO8/giphy.gif' },
+  { percent: 55, url: 'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif' },
+  { percent: 77, url: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGp5MTUxbjBjZHBtdXd3MjYzcW9yZGhjMnJ6YTdhc3Y0MWIwbjhmZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/czubJ08i7deuKGJE9A/giphy.gif' },
+  { percent: 90, url: 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWxvYXhha2QxNDJ4Ym5qbWk3dG0yaWhtMjJ6aTAxcnd4OXFwNTRwOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ebFG4jcnC1Ny8/giphy.gif' },
+  { percent: 100, url: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExejhjcWc0d2NleHBxbGxyaGs2ajZ5enJhOXN0aW03azJ6M3EwOGtuYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/EdRgVzb2X3iJW/giphy.gif' }
+];
+
+function addQuoteCard(person, milestonePercent, quoteText) {
+  const card = document.getElementById(`${person}-card`);
+  if (!card) return;
+
+  const existingCard = card.querySelector(`.quote-card[data-milestone="${milestonePercent}"]`);
+  if (existingCard) return;
+
+  const quoteCard = document.createElement('div');
+  quoteCard.className = 'quote-card';
+  quoteCard.innerText = quoteText;
+  quoteCard.setAttribute('data-milestone', milestonePercent);
+  quoteCard.style.backgroundColor = quoteColors[Math.floor(Math.random() * quoteColors.length)];
+  quoteCard.style.padding = '8px';
+  quoteCard.style.marginBottom = '8px';
+  quoteCard.style.maxWidth = '180px';
+  quoteCard.style.borderRadius = '8px';
+
+  card.style.position = 'relative';
+
+  let leftSidebar = card.querySelector('.quote-sidebar-left');
+  let rightSidebar = card.querySelector('.quote-sidebar-right');
+
+  if (!leftSidebar || !rightSidebar) {
+    leftSidebar = document.createElement('div');
+    leftSidebar.className = 'quote-sidebar-left';
+    leftSidebar.style.position = 'absolute';
+    leftSidebar.style.top = '20px';
+    leftSidebar.style.left = '-210px';
+    leftSidebar.style.display = 'flex';
+    leftSidebar.style.flexDirection = 'column';
+    leftSidebar.style.gap = '6px';
+    leftSidebar.style.width = '200px';
+
+    rightSidebar = document.createElement('div');
+    rightSidebar.className = 'quote-sidebar-right';
+    rightSidebar.style.position = 'absolute';
+    rightSidebar.style.top = '20px';
+    rightSidebar.style.right = '-210px';
+    rightSidebar.style.display = 'flex';
+    rightSidebar.style.flexDirection = 'column';
+    rightSidebar.style.gap = '6px';
+    rightSidebar.style.width = '200px';
+
+    card.appendChild(leftSidebar);
+    card.appendChild(rightSidebar);
+  }
+
+  if (triggeredQuotes[person].length % 2 === 1) {
+    leftSidebar.appendChild(quoteCard);
+  } else {
+    rightSidebar.appendChild(quoteCard);
+  }
+}
+
 // Funktion für Progress Tracker
 function setupProgressTracker(person) {
   const docRef = doc(db, "progress", `status${person.charAt(0).toUpperCase() + person.slice(1)}`);
@@ -42,7 +106,10 @@ function setupProgressTracker(person) {
     }
 
     console.log(`Raw deadline for ${person}:`, data.deadline, typeof data.deadline);
-    const totalPages = data.totalPages; // Direkt aus Firebase lesen
+    const totalPages = Number(data.totalPages) || 1;
+    const confettiMilestones = getPercentageMilestones(totalPages, [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]);
+    const quoteMilestones = getPercentageMilestones(totalPages, [10, 20, 30, 40, 50, 60, 70, 100]);
+    const gifMilestones = getPercentageMilestones(totalPages, gifMilestoneDefinitions);
     let deadline;
     if (typeof data.deadline === 'string') {
       deadline = new Date(data.deadline);
@@ -89,7 +156,7 @@ function setupProgressTracker(person) {
     if (!triggeredConfetti[person]) triggeredConfetti[person] = [];
     if (!triggeredQuotes[person]) triggeredQuotes[person] = [];
     if (!triggeredGifs[person]) triggeredGifs[person] = [];
-    if (!lastPages[person]) lastPages[person] = 0;
+    if (typeof lastPages[person] === 'undefined') lastPages[person] = null;
 
     // Seiten
     document.getElementById(`pages${suffix}`).innerText = data.pages;
@@ -125,8 +192,11 @@ function setupProgressTracker(person) {
     }
     document.getElementById(`pagesPerDay${suffix}`).innerText = pagesPerDayText;
 
+    const previousPages = lastPages[person];
+    const hasPreviousValue = typeof previousPages === 'number';
+
     // Neue Funktion: Motivations-Popup und Effekte bei jeder Seitenerhöhung
-    if (data.pages > lastPages[person]) {
+    if (hasPreviousValue && data.pages > previousPages) {
       const randomMotivation = pageMotivations[Math.floor(Math.random() * pageMotivations.length)];
       showPageMotivation(randomMotivation, person);
       
@@ -137,87 +207,48 @@ function setupProgressTracker(person) {
         pagesElement.classList.remove("pageEffect");
       }, 2000); // Nach 2 Sekunde entfernen
     }
-    lastPages[person] = data.pages; // Update
 
-    // Konfetti prüfen (alle 5 Seiten)
-    if (!triggeredConfetti[person].includes(data.pages) && confettiMilestones.includes(data.pages)) {
-      triggeredConfetti[person].push(data.pages);
-      showCardConfetti(person);
+    if (hasPreviousValue && data.pages > previousPages) {
+      confettiMilestones.forEach((milestone) => {
+        if (milestone.pages > previousPages && milestone.pages <= data.pages && !triggeredConfetti[person].includes(milestone.percent)) {
+          triggeredConfetti[person].push(milestone.percent);
+          showCardConfetti(person);
+        }
+      });
     }
 
-    // Spruch prüfen (alle 10 Seiten) und hinzufügen
+    lastPages[person] = data.pages; // Update
+
     quoteMilestones.forEach((milestone, index) => {
-      if (data.pages >= milestone && !triggeredQuotes[person].includes(milestone)) {
-        triggeredQuotes[person].push(milestone);
-        const quote = formatQuote(quotes[index], person);
-        const quoteCard = document.createElement('div');
-        quoteCard.className = 'quote-card';
-        quoteCard.innerText = quote;
-        quoteCard.setAttribute('data-pages', milestone); // Für Entfernung markieren
-        quoteCard.style.backgroundColor = quoteColors[Math.floor(Math.random() * quoteColors.length)]; // Zufällige bunte Farbe
-        quoteCard.style.padding = '8px';
-        quoteCard.style.marginBottom = '8px';
-        quoteCard.style.maxWidth = '180px';
-        quoteCard.style.borderRadius = '8px';
+      const milestoneReached = data.pages >= milestone.pages;
+      const alreadyTriggered = triggeredQuotes[person].includes(milestone.percent);
 
-        const card = document.getElementById(`${person}-card`);
-        if (card) {
-          card.style.position = 'relative'; // Basis für absolute Sidebars
-
-          let leftSidebar = card.querySelector('.quote-sidebar-left');
-          let rightSidebar = card.querySelector('.quote-sidebar-right');
-
-          if (!leftSidebar || !rightSidebar) {
-            leftSidebar = document.createElement('div');
-            leftSidebar.className = 'quote-sidebar-left';
-            leftSidebar.style.position = 'absolute';
-            leftSidebar.style.top = '20px';
-            leftSidebar.style.left = '-210px';
-            leftSidebar.style.display = 'flex';
-            leftSidebar.style.flexDirection = 'column';
-            leftSidebar.style.gap = '6px';
-            leftSidebar.style.width = '200px';
-
-            rightSidebar = document.createElement('div');
-            rightSidebar.className = 'quote-sidebar-right';
-            rightSidebar.style.position = 'absolute';
-            rightSidebar.style.top = '20px';
-            rightSidebar.style.right = '-210px';
-            rightSidebar.style.display = 'flex';
-            rightSidebar.style.flexDirection = 'column';
-            rightSidebar.style.gap = '6px';
-            rightSidebar.style.width = '200px';
-
-            card.appendChild(leftSidebar);
-            card.appendChild(rightSidebar);
-          }
-
-          if (triggeredQuotes[person].length % 2 === 1) {
-            leftSidebar.appendChild(quoteCard);
-          } else {
-            rightSidebar.appendChild(quoteCard);
-          }
+      if (milestoneReached || alreadyTriggered) {
+        if (!alreadyTriggered) {
+          triggeredQuotes[person].push(milestone.percent);
         }
+
+        const quote = formatQuote(quotes[index], person);
+        addQuoteCard(person, milestone.percent, quote);
       }
     });
 
     // GIF-Popup prüfen
-    if (gifMilestones.includes(data.pages) && !triggeredGifs[person].includes(data.pages)) {
-      triggeredGifs[person].push(data.pages);
-      const gifUrl = gifUrls[data.pages];
-      showCardGifMilestone(person, gifUrl);
-    } else if (data.pages > 80) {
-      if (!triggeredGifs[person].includes('over80')) {
-        triggeredGifs[person].push('over80');
-        const gifUrl = gifUrls.over80;
-        showCardGifMilestone(person, gifUrl);
-      }
+    if (hasPreviousValue && data.pages > previousPages) {
+      gifMilestones.forEach((milestone) => {
+        if (milestone.pages > previousPages && milestone.pages <= data.pages && !triggeredGifs[person].includes(milestone.percent)) {
+          triggeredGifs[person].push(milestone.percent);
+          if (milestone.url) {
+            showCardGifMilestone(person, milestone.url);
+          }
+        }
+      });
     }
 
     // Entferne aus triggeredGifs, wenn Seiten sinken (für über 80)
-    if (data.pages <= 80 && triggeredGifs[person].includes('over80')) {
-      triggeredGifs[person].splice(triggeredGifs[person].indexOf('over80'), 1);
-    }
+    // if (data.pages <= 80 && triggeredGifs[person].includes('over80')) {
+    //   triggeredGifs[person].splice(triggeredGifs[person].indexOf('over80'), 1);
+    // }
 
     // Kalender für Timna
     if (person === 'timna' && writingDays.length > 0) {
@@ -262,31 +293,30 @@ function setupProgressTracker(person) {
   });
 }
 
-const confettiMilestones = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80]; // Alle 5 Seiten: Konfetti
-const quoteMilestones = [10, 20, 30, 40, 50, 60, 70, 80]; // Alle 10 Seiten: Spruch
+function getPercentageMilestones(totalPages, milestoneDefinitions) {
+  const milestones = [];
+  milestoneDefinitions.forEach((definition) => {
+    const percent = typeof definition === 'number' ? definition : definition.percent;
+    const milestone = Math.max(1, Math.ceil(totalPages * percent / 100));
+    if (milestone <= totalPages && !milestones.some((item) => item.pages === milestone)) {
+      milestones.push(typeof definition === 'number' ? { pages: milestone, percent } : { pages: milestone, percent, url: definition.url });
+    }
+  });
+  return milestones;
+}
 const quotes = [    
-    "JEA! 10 Seiten is schau mal a bissal was. Let's GOO! 💪",
-    "20 Seiten done. SO PROUD. :D 🚀",
-    "HAWARA {name} LET'S FEEEETZ! 30 Seiten is quasi schon halbzeit und halbzeit is quasi schon fertig. 🌟",
+    "JEA! 10% is schau mal a bissal was. Let's GOO! 💪",
+    "20% done. SO PROUD. :D 🚀",
+    "HAWARA {name} LET'S FEEEETZ! 1/3 is quasi schon halbzeit und halbzeit is quasi schon fertig. 🌟",
     "Hoibzeid. I cry. Amazing work 🏆",
     "Go giirl go giirl go giirl! 🔑",
     "Heast jetzt is nimma viel. Griagst an Regenbogen dafia! 🌈",
-    "OMG! 70! Jetzt hean ma aba nimma auf! Des schaffst jetzt a nu! 🎯",
+    "OMG! 70%! Jetzt hean ma aba nimma auf! Des schaffst jetzt a nu! 🎯",
     "You are AMAZING! YOU DID IT! Hat ja nur a bissi dauert aba es is done. so proud. 🎉"
 ];
 const quoteColors = ['#d41844ff', '#C1E1C1', '#FFFACD', '#DDA0DD', '#AFEEEE', '#F0E68C', '#140eb3ff', '#98FB98']; // Bunte Pastellfarben
 let triggeredConfetti = {};
 let triggeredQuotes = {};
-const gifMilestones = [10, 20, 30, 50, 70, 80]; // Meilensteine für GIF-Popups
-const gifUrls = {
-  10: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnYzZW1hOXZkcXg0d2dya2M0aHpyejJ2Y3BsN21wdWY0bm00YzFhdCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IwYzRHOA0bTtbx4VBd/giphy.gif', 
-  20: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzBrODc1ZjliZnFscW1zdTkxc25hNnR4ZHR2YXQ5cjBnenR4MG0yeCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5FfjsWfdbJcXu/giphy.gif',
-  30: 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJrcnNucTBpZHo5ZDdnY3h0ZjdlYWlnaWhqcDRyb2l2NjdlbTVhdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5UAofAl6g5t1GL5nO8/giphy.gif',
-  50: 'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif',
-  70: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGp5MTUxbjBjZHBtdXd3MjYzcW9yZGhjMnJ6YTdhc3Y0MWIwbjhmZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/czubJ08i7deuKGJE9A/giphy.gif',
-  80: 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWxvYXhha2QxNDJ4Ym5qbWk3dG0yaWhtMjJ6aTAxcnd4OXFwNTRwOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ebFG4jcnC1Ny8/giphy.gif',
-  over80: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExejhjcWc0d2NleHBxbGxyaGs2ajZ5enJhOXN0aW03azJ6M3EwOGtuYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/EdRgVzb2X3iJW/giphy.gif'
-};
 let triggeredGifs = {}; // Um Wiederholungen zu verhindern
 const pageMotivations = ["Wowii!", "Wida a seital :D", "Amazing!", "YAASS!", "Let's Gooo!", "Task: geh mal a runde ums haus.", "💪", "🚀", "🌟", "🔥", "👍"];
 
