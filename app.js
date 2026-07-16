@@ -108,7 +108,7 @@ function setupProgressTracker(person) {
     console.log(`Raw deadline for ${person}:`, data.deadline, typeof data.deadline);
     const totalPages = Number(data.totalPages) || 1;
     const confettiMilestones = getPercentageMilestones(totalPages, [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]);
-    const quoteMilestones = getPercentageMilestones(totalPages, [10, 20, 30, 40, 50, 60, 70, 100]);
+    const quoteMilestones = getPercentageMilestones(totalPages, [10, 20, 33, 50, 58, 70, 85, 100]);
     const gifMilestones = getPercentageMilestones(totalPages, gifMilestoneDefinitions);
     let deadline;
     if (typeof data.deadline === 'string') {
@@ -310,8 +310,8 @@ const quotes = [
     "HAWARA {name} LET'S FEEEETZ! 1/3 is quasi schon halbzeit und halbzeit is quasi schon fertig. 🌟",
     "Hoibzeid. I cry. Amazing work 🏆",
     "Go giirl go giirl go giirl! 🔑",
-    "Heast jetzt is nimma viel. Griagst an Regenbogen dafia! 🌈",
     "OMG! 70%! Jetzt hean ma aba nimma auf! Des schaffst jetzt a nu! 🎯",
+    "Heast jetzt is nimma viel. Griagst an Regenbogen dafia! 🌈",
     "You are AMAZING! YOU DID IT! Hat ja nur a bissi dauert aba es is done. so proud. 🎉"
 ];
 const quoteColors = ['#d41844ff', '#C1E1C1', '#FFFACD', '#DDA0DD', '#AFEEEE', '#F0E68C', '#140eb3ff', '#98FB98']; // Bunte Pastellfarben
